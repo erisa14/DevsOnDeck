@@ -1,6 +1,7 @@
 package com.personalproject.devsondeck.services;
 
 import com.personalproject.devsondeck.models.Dev;
+import com.personalproject.devsondeck.models.Job;
 import com.personalproject.devsondeck.models.Login;
 import com.personalproject.devsondeck.models.Skill;
 import com.personalproject.devsondeck.repositories.DevRepository;
@@ -75,11 +76,24 @@ public class DevService {
     public void saveDev(Dev dev) {
         devRepository.save(dev);
     }
+    public List<Dev> getAll(){
+        return devRepository.findAll();
+    }
 
     public void addSkill(Dev dev, Skill skill){
             List<Skill> skills=dev.getSkills();
             skills.add(skill);
             devRepository.save(dev);
+    }
+    public void deleteSkill(Dev dev,Skill skill){
+        List<Skill> skills=dev.getSkills();
+        skills.remove(skill);
+        devRepository.save(dev);
+    }
+
+    public List<Dev> findDevsWithMatchingSkills(Job job) {
+        List<Skill> jobSkills = job.getSkills();
+        return devRepository.findDevsBySkillsIn(jobSkills);
     }
 }
 

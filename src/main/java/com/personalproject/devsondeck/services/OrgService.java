@@ -1,13 +1,16 @@
 package com.personalproject.devsondeck.services;
 
+import com.personalproject.devsondeck.models.Job;
 import com.personalproject.devsondeck.models.Login;
 import com.personalproject.devsondeck.models.Org;
+import com.personalproject.devsondeck.models.Skill;
 import com.personalproject.devsondeck.repositories.OrgRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -69,4 +72,5 @@ public class OrgService {
     public Org add(Org org) {
         return orgRepository.save(org);
     }
+
 }

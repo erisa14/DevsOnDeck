@@ -19,7 +19,7 @@
 </div>
 <div class="form1  border border-3 border-dark mt-4">
     <h1 class="bg-primary text-center p-1 mb-2">Add A Position</h1>
-    <form:form modelAttribute="job" action="/orgs/jobs/new" method="post" class="px-5 form gap-2 d-flex flex-column">
+    <form:form modelAttribute="jobs" action="/orgs/jobs/new" enctype="multipart/form-data" method="post" class="px-5 form gap-2 d-flex flex-column">
         <div class="d-flex flex-row justify-content-center align-items-center px-5">
             <p class="col-sm-3">
                 <form:label path="position" class="ms-2 fw-semibold col-form-label fs-2 text">Name</form:label>
@@ -38,19 +38,18 @@
             <form:errors path="org"/>
             <form:hidden path="org" value="${org.id}"/>
         </div>
-    </form:form>
+<%--    </form:form>--%>
     <div class="d-flex flex-row justify-content-center align-items-center px-5">
         <p class="col-sm-3">
             <label class="ms-2 fw-semibold col-form-label fs-2 text">Skills</label>
         </p>
         <div class="border border-2 border-dark mt-2 form-control">
-                <c:forEach items="${skills}" var="skill" varStatus="loopStatus">
+    <c:forEach items="${skills}" var="skill" varStatus="loopStatus">
                     <c:if test="${(loopStatus.index % 4) == 0}">
                         <div class="image-row">
                     </c:if>
-                    <button type="submit" class="submit-btn" name="addSkill" value="${skill.id}">
                         <div class="text-center">
-                            <input type="checkbox" name="addSkill" id="${skill.id}" value="${skill.id}">
+                            <input type="checkbox" name="jobSkill" id="${skill.id}" value="${skill.id}">
                             <label class="checkbox-label" for="${skill.id}">
                                 <div>
                                     <img class="skill-image" src="${skill.photo}">
@@ -58,14 +57,12 @@
                                 </div>
                             </label>
                         </div>
-                    </button>
-                    <c:if test="${((loopStatus.index + 1) % 4) == 0 || loopStatus.last}">
+        <c:if test="${((loopStatus.index + 1) % 4) == 0 || loopStatus.last}">
                         </div>
                     </c:if>
                 </c:forEach>
         </div>
     </div>
-    <form:form modelAttribute="job" action="/orgs/jobs/new" method="post" class="px-5 form gap-2 d-flex flex-column">
         <p class="d-md-flex justify-content-md-end mt-2">
             <input class="col-2 btn  btn-primary" type="submit" value="Add Position">
         </p>

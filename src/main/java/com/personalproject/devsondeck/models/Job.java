@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,7 +23,7 @@ public class Job {
 
     //Job & Org
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="job_id")
+    @JoinColumn(name="org_id")
     private Org org;
 
     //Skill & Job
@@ -32,7 +33,7 @@ public class Job {
             joinColumns = @JoinColumn(name = "job_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
-    private List<Skill> skills;
+    private List<Skill> skills=new ArrayList<>();
 
     public Job(){}
     public Long getId() {

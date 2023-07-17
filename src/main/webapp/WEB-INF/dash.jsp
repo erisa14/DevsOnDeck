@@ -24,12 +24,17 @@
     <div class="border border-2 border-dark mt-2">
     <h5 class="text-center">Positions To Fill</h5>
     <c:forEach items="${jobs}" var="job">
-      ${job.position}
+     <li class="list-group-item px-3">${job.position}</li>
     </c:forEach>
     </div>
   </div>
   <div class="w-75 mx-4 border border-2 border-dark overflow-auto">
     <h4>Available Devs</h4>
+    <c:forEach items="${devs}" var="dev">
+      <p>${dev.bio}</p>
+      <p>${dev.firstName}</p>
+      <c:out value="${dev.skills}"/>
+    </c:forEach>
   </div>
   </div>
 <a href="/skills">Skills</a>

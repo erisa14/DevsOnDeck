@@ -102,55 +102,17 @@
                     </div>
                 </div>
             </div>
-                <div class=" mx-4 border border-2 border-dark overflow-auto">
+                <div class="skill-container mx-4 border border-2 border-dark">
                     <c:forEach var="skillAss" items="${assigned}">
-                        <img src="${skillAss.photo}" style="width: 10%;">
+                        <img src="${skillAss.photo}" style="width: 18%;">
                     </c:forEach>
                 </div>
         <div>
-            <form:form modelAttribute="dev" method="post" action="/addBio">
-                <div class="row mb-3">
-                    <form:errors path="id" class="error"/>
-                    <form:input type="hidden" path="id" class="form-control"/>
-                </div>
-                <div class="row mb-3">
-                    <form:errors path="firstName" class="error"/>
-                    <form:input type="hidden" path="firstName" class="form-control"/>
-                </div>
-                <div class="row mb-3">
-                    <form:errors path="lastName" class="error"/>
-                    <form:input type="hidden" path="lastName" class="form-control"/>
-                </div>
-                <div class="row mb-3">
-                    <form:errors path="email" class="error"/>
-                    <form:input type="hidden" path="email" class="form-control"/>
-                </div>
-
-                <div class="row mb-3">
-                    <form:errors path="address" class="error"/>
-                    <form:input type="hidden" path="address" class="form-control"/>
-                </div>
-
-                <div class="row mb-3">
-                    <form:errors path="city" class="error"/>
-                    <form:input type="hidden" path="city" class="form-control"/>
-                </div>
-
-                <div class="row mb-3">
-                    <form:errors path="password" class="error"/>
-                    <form:input type="hidden" path="password" class="form-control"/>
-                </div>
-                <div class="row mb-3">
-                    <form:errors path="confirm" class="error"/>
-                    <form:input type="hidden" path="confirm" value="${userId.password}" class="form-control"/>
-                </div>
-
-
-
-                <form:label path="bio">Bio</form:label>
-                <form:textarea path="bio" name="bio" id="bio"/>
+            <form method="post" action="/addBio" name="bio">
+                <label for="bio">Bio</label>
+                <textarea name="bio" id="bio"></textarea>
                 <input type="submit" value="Submit">
-            </form:form>
+            </form>
         </div>
         </div>
     </div>

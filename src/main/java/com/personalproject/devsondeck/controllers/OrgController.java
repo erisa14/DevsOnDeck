@@ -4,6 +4,7 @@ import com.personalproject.devsondeck.models.Job;
 import com.personalproject.devsondeck.models.Login;
 import com.personalproject.devsondeck.models.Org;
 import com.personalproject.devsondeck.models.Skill;
+import com.personalproject.devsondeck.services.DevService;
 import com.personalproject.devsondeck.services.JobService;
 import com.personalproject.devsondeck.services.OrgService;
 import com.personalproject.devsondeck.services.SkillService;
@@ -16,7 +17,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -29,6 +32,8 @@ public class OrgController {
 
     @Autowired
     private JobService jobService;
+    @Autowired
+    private DevService devService;
 
     @GetMapping("/orgs/register")
     public String index1(Model model, @ModelAttribute("newOrg") Org newOrg, HttpSession session){
@@ -88,6 +93,7 @@ public class OrgController {
 
         model.addAttribute("org", org);
         model.addAttribute("jobs", jobService.getAll());
+        model.addAttribute("devs",devService.getAll());
         return "dash";
     }
     @GetMapping("/skills")
@@ -113,22 +119,27 @@ public class OrgController {
     }
 
     @GetMapping("/orgs/jobs/new")
-    private String newJob(@ModelAttribute("job")Job job, HttpSession session,Model model){
+    private String newJob(@ModelAttribute("jobs") Job jobs,HttpSession session, Model model){
         if(session.getAttribute("userId") == null) {
             return "redirect:/logoutOrg";
         }
         Org org = orgService.findUserById((Long) session.getAttribute("userId"));
         model.addAttribute("org", org);
         model.addAttribute("skills",skillService.getAll());
+        model.addAttribute("jobs", new Job());
         return "newPosition";
     }
 
     @PostMapping("/orgs/jobs/new")
-    private String newJob(@Valid@ModelAttribute("job")Job job, BindingResult result){
+    private String newJob(@Valid@ModelAttribute("jobs") Job jobs,BindingResult result, @RequestParam("jobSkill") List<Skill> jobSkill){
        if (result.hasErrors()){
            return "newPosition";
        }
-       jobService.create(job);
+//        Job job = jobService.create(jobs);
+//        Skill skill=skillService.find(jobSkill);
+//
+        jobs.setSkills(jobSkill);
+       jobService.create(jobs);
        return "redirect:/orgs/dashboard";
     }
 

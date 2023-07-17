@@ -79,3 +79,7 @@ label.checkbox-label .image-text {
     height: 90px;
     background-color: white;
 }
+.skill-container{
+    height: 100px;
+    width: 25%;
+}

@@ -5,6 +5,7 @@ import com.personalproject.devsondeck.models.Login;
 import com.personalproject.devsondeck.models.Skill;
 import com.personalproject.devsondeck.repositories.SkillRepo;
 import com.personalproject.devsondeck.services.DevService;
+import com.personalproject.devsondeck.services.JobService;
 import com.personalproject.devsondeck.services.SkillService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +24,8 @@ public class DevController {
     private DevService devService;
     @Autowired
     private SkillService skillService;
+    @Autowired
+    private JobService jobService;
 
 //    @GetMapping("/")
 //    public String local(HttpSession session){
@@ -100,19 +100,35 @@ public class DevController {
     }
     @PostMapping("/addSkill")
     public String saveSkills(@ModelAttribute("newSkill")Skill newSkill,@RequestParam("addSkill") Long addSkill, HttpSession session) {
-        Skill skill=skillService.find(addSkill);
         Long userId = (Long) session.getAttribute("userId");
         Dev dev=devService.findUserById(userId);
-        dev.getSkills().add(skill);
-        devService.addSkill(dev, skill);
+        Skill skill=skillService.find(addSkill);
+        if (dev.getSkills().contains(skill)){
+            devService.deleteSkill(dev,skill);
+        }
+        else {
+            dev.setSkills(dev.getSkills());
+            devService.addSkill(dev, skill);
+        }
         return "redirect:/devs/skills/language";
     }
     @PostMapping("/addBio")
     public String addBio(@ModelAttribute("dev")Dev dev, HttpSession session){
-        devService.saveDev(dev);
-        return "redirect:/devs/skills/language";
+        Long userId=(Long) session.getAttribute("userId");
+        Dev loggedDev= devService.findUserById(userId);
+        loggedDev.setBio(loggedDev.getBio());
+        devService.saveDev(loggedDev);
+        return "redirect:/devs/jobs";
     }
 
+    @GetMapping("devs/jobs")
+    public String jobs(HttpSession session, Model model){
+        if(session.getAttribute("userId") == null) {
+            return "redirect:/logout";
+        }
+        model.addAttribute("jobs", jobService.getAll());
+        return "devJobs";
+    }
 
     @GetMapping("/logout")
     public String logout(HttpSession session){
