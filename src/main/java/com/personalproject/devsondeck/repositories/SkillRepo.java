@@ -13,4 +13,5 @@ public interface SkillRepo extends CrudRepository<Skill, Long> {
     List<Skill> findAll();
 
     List<Skill> findByDevsIdIs(Long id);
+
 }

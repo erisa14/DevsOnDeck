@@ -1,6 +1,7 @@
 package com.personalproject.devsondeck.controllers;
 
 import com.personalproject.devsondeck.models.Dev;
+import com.personalproject.devsondeck.models.Job;
 import com.personalproject.devsondeck.models.Login;
 import com.personalproject.devsondeck.models.Skill;
 import com.personalproject.devsondeck.repositories.SkillRepo;
@@ -27,14 +28,10 @@ public class DevController {
     @Autowired
     private JobService jobService;
 
-//    @GetMapping("/")
-//    public String local(HttpSession session){
-//        Long loggedInUserId=(Long) session.getAttribute("userId");
-//        if (loggedInUserId==null){
-//            return "redirect:/devs/register";
-//        }
-//        return "/";
-//    }
+    @GetMapping("/")
+    public String local(){
+        return "index";
+    }
     @GetMapping("/devs/register")
     public String index1(Model model, @ModelAttribute("newDev") Dev newDev, HttpSession session){
         Long loggedInUserId=(Long) session.getAttribute("userId");
@@ -51,8 +48,7 @@ public class DevController {
         Long loggedInUserId=(Long) session.getAttribute("userId");
 
         if (loggedInUserId!=null){
-            return "redirect:/devs/skills/language";
-            //ndryshoje me vone
+            return "redirect:/devs/jobs";
         }
         model.addAttribute("newLogin", new Login());
         return "devLog";
@@ -81,8 +77,7 @@ public class DevController {
             return "devLog";
         }
         session.setAttribute("userId", dev.getId());
-        return "redirect:/devs/skills/language";
-        //ndryshoje me vone
+        return "redirect:/devs/jobs";
     }
 
     @GetMapping("/devs/skills/language")
@@ -92,10 +87,11 @@ public class DevController {
             return "redirect:/logout";
         }
         Long userId = (Long) session.getAttribute("userId");
+        Dev editDev=devService.findUserById(userId);
         model.addAttribute("userId", devService.findUserById(userId));
         model.addAttribute("skills", skillService.getAll());
         model.addAttribute("assigned", skillService.findBy(userId));
-        model.addAttribute("dev", devService.findUserById(userId));
+        model.addAttribute("editDev", editDev);
         return "dashboard";
     }
     @PostMapping("/addSkill")
@@ -103,36 +99,76 @@ public class DevController {
         Long userId = (Long) session.getAttribute("userId");
         Dev dev=devService.findUserById(userId);
         Skill skill=skillService.find(addSkill);
+        List<Skill> skills=dev.getSkills();
         if (dev.getSkills().contains(skill)){
             devService.deleteSkill(dev,skill);
         }
         else {
-            dev.setSkills(dev.getSkills());
-            devService.addSkill(dev, skill);
+            if (skills.size()<5) {
+                dev.setSkills(dev.getSkills());
+                devService.addSkill(dev, skill);
+            }
         }
         return "redirect:/devs/skills/language";
     }
     @PostMapping("/addBio")
-    public String addBio(@ModelAttribute("dev")Dev dev, HttpSession session){
-        Long userId=(Long) session.getAttribute("userId");
+    public String addBio(@Valid@ModelAttribute("editDev") Dev editDev, BindingResult result, HttpSession session){
+        if (result.hasErrors()){
+            return "dashboard";
+        }
+        Long userId = (Long) session.getAttribute("userId");
         Dev loggedDev= devService.findUserById(userId);
-        loggedDev.setBio(loggedDev.getBio());
+        loggedDev.setConfirm(editDev.getConfirm());
+        loggedDev.setBio(editDev.getBio());
         devService.saveDev(loggedDev);
         return "redirect:/devs/jobs";
     }
 
-    @GetMapping("devs/jobs")
-    public String jobs(HttpSession session, Model model){
+    @GetMapping("/devs/jobs")
+    public String getJob(Model model,HttpSession session){
         if(session.getAttribute("userId") == null) {
-            return "redirect:/logout";
+            return "redirect:/logoutOrg";
         }
-        model.addAttribute("jobs", jobService.getAll());
-        return "devJobs";
+        Long userId=(Long) session.getAttribute("userId");
+        Dev dev=devService.findUserById(userId);
+        List<Job> jobs = jobService.findJobsByMatchingSkills(dev.getSkills());
+        model.addAttribute("dev", dev);
+        model.addAttribute("jobs", jobs);
+        model.addAttribute("allJobs", jobService.getAll());
+
+
+        model.addAttribute("toApply", jobService.toApply(dev));
+        model.addAttribute("applied", jobService.applied(dev));
+
+        return "jobsDev";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session){
         session.invalidate();
-        return "redirect:/devs/login";
+        return "redirect:/";
+    }
+
+
+
+    @RequestMapping("/dev/apply/{id}")
+    public String applyJob(@PathVariable("id") Long id, HttpSession session, Model model) {
+
+        if(session.getAttribute("userId") == null) {
+            return "redirect:/logout";
+        }
+        Long userId = (Long) session.getAttribute("userId");
+
+        Job job = jobService.findJobById(id);
+        Dev dev = devService.findUserById(userId);
+
+        dev.getJobs().add(job);
+        devService.saveDev(dev);
+
+        model.addAttribute("dev", dev);
+        model.addAttribute("toApply", jobService.toApply(dev));
+        model.addAttribute("applied", jobService.applied(dev));
+
+        return "redirect:/devs/jobs";
     }
 }

@@ -11,16 +11,12 @@
     margin: 0 auto;
 }
 .dash{
-    width: 95%;
+    width: 80%;
     margin: 0 auto;
 }
 .image-row {
     display: flex;
-    /*justify-content: space-between;*/
-    /*margin-bottom: 10px;*/
     max-width: 50%;
-    /*margin-top: 10px;*/
-
 }
 
 .image-row img {
@@ -46,7 +42,7 @@ label.checkbox-label::before {
     display: block;
     width: 60px;
     height: 85px;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
     background-color: #fff;
     position: relative;
     left: 0;
@@ -55,7 +51,7 @@ label.checkbox-label::before {
 
 /* Style the checkbox icon when checked */
 input[type="checkbox"]:checked + label.checkbox-label::before {
-    background-color: #009688;
+    background-color: #E0FFFF;
 }
 
 /* Style the image */
@@ -78,8 +74,18 @@ label.checkbox-label .image-text {
     width: 65px;
     height: 90px;
     background-color: white;
+    border: none;
+    margin-left: 35px;
 }
 .skill-container{
     height: 100px;
-    width: 25%;
+    width: 85%;
+}
+.photo-div{
+    height: 300px;
+    overflow-y: auto;
+}
+.org-photo{
+    height: 300px;
+    overflow-y: auto;
 }

@@ -82,6 +82,21 @@ public class Org {
     public Org() {
     }
 
+    public Org(Long id, String name, String firstName, String lastName, String email, String address, String city, String state, String password, String confirm, List<Dev> devs, List<Job> jobs) {
+        this.id = id;
+        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.password = password;
+        this.confirm = confirm;
+        this.devs = devs;
+        this.jobs = jobs;
+    }
+
     public Long getId() {
         return id;
     }

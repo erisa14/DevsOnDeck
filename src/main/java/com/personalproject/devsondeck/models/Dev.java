@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="devs")
@@ -82,7 +83,30 @@ public class Dev {
     )
     private List<Org> orgs;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "devs_jobs",
+            joinColumns = @JoinColumn(name = "dev_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_id")
+    )
+    private List<Job> jobs;
+
     public Dev() {
+    }
+
+    public Dev(Long id, String firstName, String lastName, String email, String address, String city, String state, String bio, String password, String confirm, List<Skill> skills, List<Org> orgs) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.bio = bio;
+        this.password = password;
+        this.confirm = confirm;
+        this.skills = skills;
+        this.orgs = orgs;
     }
 
     public Long getId() {
@@ -180,4 +204,13 @@ public class Dev {
     public void setOrgs(List<Org> orgs) {
         this.orgs = orgs;
     }
+
+    public List<Job> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(List<Job> jobs) {
+        this.jobs = jobs;
+    }
+
 }

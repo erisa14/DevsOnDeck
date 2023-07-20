@@ -35,7 +35,24 @@ public class Job {
     )
     private List<Skill> skills=new ArrayList<>();
 
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "devs_jobs",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "dev_id")
+    )
+    private List<Dev> devs;
     public Job(){}
+
+    public Job(Long id, String position, String description, Org org, List<Skill> skills) {
+        this.id = id;
+        this.position = position;
+        this.description = description;
+        this.org = org;
+        this.skills = skills;
+    }
+
     public Long getId() {
         return id;
     }
@@ -74,5 +91,13 @@ public class Job {
 
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
+    }
+
+    public List<Dev> getDevs() {
+        return devs;
+    }
+
+    public void setDevs(List<Dev> devs) {
+        this.devs = devs;
     }
 }

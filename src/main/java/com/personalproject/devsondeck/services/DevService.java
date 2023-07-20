@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,9 +92,23 @@ public class DevService {
         devRepository.save(dev);
     }
 
-    public List<Dev> findDevsWithMatchingSkills(Job job) {
-        List<Skill> jobSkills = job.getSkills();
-        return devRepository.findDevsBySkillsIn(jobSkills);
+    public List<Dev> findDevsByMatchingSkills(List<Skill> jobSkills) {
+        List<Dev> devs = devRepository.findAll();
+        List<Dev> matchingDevs = new ArrayList<>();
+        for (Dev dev : devs) {
+            List<Skill> devSkills = dev.getSkills();
+            int matchingSkillCount = 0;
+            for (Skill jobSkill : jobSkills) {
+                if (devSkills.contains(jobSkill)) {
+                    matchingSkillCount++;
+                }
+            }
+            if (matchingSkillCount >= 2) {
+                matchingDevs.add(dev);
+            }
+        }
+
+        return matchingDevs;
     }
 }
 

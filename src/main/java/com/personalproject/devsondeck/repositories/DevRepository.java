@@ -13,6 +13,4 @@ import java.util.Optional;
 public interface DevRepository extends CrudRepository<Dev, Long> {
     Optional<Dev> findByEmail(String email);
     List<Dev> findAll();
-
-    List<Dev> findDevsBySkillsIn(List<Skill> skills);
 }

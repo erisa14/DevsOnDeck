@@ -1,9 +1,6 @@
 package com.personalproject.devsondeck.controllers;
 
-import com.personalproject.devsondeck.models.Job;
-import com.personalproject.devsondeck.models.Login;
-import com.personalproject.devsondeck.models.Org;
-import com.personalproject.devsondeck.models.Skill;
+import com.personalproject.devsondeck.models.*;
 import com.personalproject.devsondeck.services.DevService;
 import com.personalproject.devsondeck.services.JobService;
 import com.personalproject.devsondeck.services.OrgService;
@@ -14,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +86,7 @@ public class OrgController {
         Org org = orgService.findUserById(userId);
 
         model.addAttribute("org", org);
-        model.addAttribute("jobs", jobService.getAll());
+        model.addAttribute("jobs", jobService.findBy(userId));
         model.addAttribute("devs",devService.getAll());
         return "dash";
     }
@@ -135,18 +129,29 @@ public class OrgController {
        if (result.hasErrors()){
            return "newPosition";
        }
-//        Job job = jobService.create(jobs);
-//        Skill skill=skillService.find(jobSkill);
-//
-        jobs.setSkills(jobSkill);
-       jobService.create(jobs);
+       List<Skill> skills=jobs.getSkills();
+           jobs.setSkills(jobSkill);
+           jobService.create(jobs);
        return "redirect:/orgs/dashboard";
     }
 
+    @GetMapping("/orgs/jobs/{id}")
+    public String getJob(@PathVariable("id")Long id, Model model,HttpSession session){
+        if(session.getAttribute("userId") == null) {
+            return "redirect:/logoutOrg";
+        }
+        Job job=jobService.findJobById(id);
+
+        List<Dev> developers = devService.findDevsByMatchingSkills(job.getSkills());
+
+        model.addAttribute("job", job);
+        model.addAttribute("developers", developers);
+        return "devJobs";
+    }
     @GetMapping("/logoutOrg")
     public String logout(HttpSession session){
         session.invalidate();
-        return "redirect:/orgs/login";
+        return "redirect:/";
     }
 
 }

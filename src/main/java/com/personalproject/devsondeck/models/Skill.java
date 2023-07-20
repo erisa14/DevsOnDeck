@@ -36,6 +36,14 @@ public class Skill {
 
     public Skill(){}
 
+    public Skill(Long id, String languageName, String photo, List<Dev> devs, List<Job> jobs) {
+        this.id = id;
+        this.languageName = languageName;
+        this.photo = photo;
+        this.devs = devs;
+        this.jobs = jobs;
+    }
+
     public Skill(Long id, String languageName) {
         this.id = id;
         this.languageName = languageName;
@@ -82,5 +90,7 @@ public class Skill {
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
     }
+
+
 }
 
